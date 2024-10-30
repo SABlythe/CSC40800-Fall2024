@@ -2,8 +2,15 @@
 #include <iostream>
 #include <FlexLexer.h>
 
+// don't necessarily need this all the time - this code uses some
+// custom functions ...
 #include "MyMemory.hpp"
+
+  // defines my lexical analyzer class 
 #include "MyScanner.hpp"
+
+  // bison/yacc requires a fumction called yylex() to get
+  // the next token  
 #define yylex(x) scanner->lex(x)
 
 using namespace yy;
@@ -78,10 +85,12 @@ factor: term
     | factor MULOP_T term
     ;
 
-term: ID_T
-    | NUM_INT_T 
-    | NUM_REAL_T 
-    | LPAREN_T expr RPAREN_T 
+term: ID_T { cout << "using term -> ID_T , with rhs ="  << $1.sval << endl;  }
+    | NUM_INT_T  { cout << "using term -> NUM_INT_T , with rhs ="
+			<< $1.ival << endl;  }
+    | NUM_REAL_T { cout << "using term -> NUM_REAL_T , with rhs ="
+			<< $1.dval << endl;  } 
+| LPAREN_T {cout << "found an (" << endl;  } expr RPAREN_T 
     | ADDOP_T term
     ;
 
