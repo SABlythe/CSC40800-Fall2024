@@ -18,7 +18,9 @@ ALPHA   [A-Za-z]
 WSPACE  [\ \t\n]
 %%
 
-{ALPHA}({ALPHA}|{DIGIT})*  {return Parser::token::ID_T;} 
+{ALPHA}({ALPHA}|{DIGIT})*  {
+             yylval->sval=YYText(); 
+             return Parser::token::ID_T;} 
 
 
 {DIGIT}+  { 

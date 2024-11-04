@@ -71,25 +71,35 @@ struct myst
 %%
 start: list ;
 
-list : expr SEMICOLON_T list |
+list : expr SEMICOLON_T {cout << endl << $1.dval;} list |
         assign SEMICOLON_T list | ;
    
 assign: ID_T ASSIGNOP_T expr 
     ;
 
-expr: factor 
+expr: factor { $$.dval = $1.dval;}  
     | expr ADDOP_T factor
+{
+  $$.dval = $1.dval + $3.dval;
+}
     ;
 
 factor: term
+{
+  $$.dval = $1.dval ;
+}
     | factor MULOP_T term
     ;
 
 term: ID_T { cout << "using term -> ID_T , with rhs ="  << $1.sval << endl;  }
-    | NUM_INT_T  { cout << "using term -> NUM_INT_T , with rhs ="
-			<< $1.ival << endl;  }
-    | NUM_REAL_T { cout << "using term -> NUM_REAL_T , with rhs ="
-			<< $1.dval << endl;  } 
+    | NUM_INT_T  { /*cout << "using term -> NUM_INT_T , with rhs ="
+		     << $1.ival << endl;*/
+  $$.dval = $1.ival ;
+                 }
+    | NUM_REAL_T { /*cout << "using term -> NUM_REAL_T , with rhs ="
+		     << $1.dval << endl;*/
+  $$.dval = $1.dval ;
+ } 
 | LPAREN_T {cout << "found an (" << endl;  } expr RPAREN_T 
     | ADDOP_T term
     ;
