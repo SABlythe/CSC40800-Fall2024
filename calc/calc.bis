@@ -74,13 +74,16 @@ start: list ;
 list : expr SEMICOLON_T {cout << endl << $1.dval;} list |
         assign SEMICOLON_T list | ;
    
-assign: ID_T ASSIGNOP_T expr 
+assign: ID_T ASSIGNOP_T expr {storeValue($1.sval, $3.dval);}
     ;
 
 expr: factor { $$.dval = $1.dval;}  
     | expr ADDOP_T factor
 {
-  $$.dval = $1.dval + $3.dval;
+  if ($2.sval=="+")
+    $$.dval = $1.dval + $3.dval;
+  else  // must be "-"
+    $$.dval = $1.dval - $3.dval;
 }
     ;
 
@@ -89,9 +92,15 @@ factor: term
   $$.dval = $1.dval ;
 }
     | factor MULOP_T term
+{
+  if ($2.sval=="*")
+    $$.dval = $1.dval * $3.dval;
+  else  // must be "/"
+    $$.dval = $1.dval / $3.dval;
+}
     ;
 
-term: ID_T { cout << "using term -> ID_T , with rhs ="  << $1.sval << endl;  }
+term: ID_T { $$.dval = lookupValue($1.sval);  }
     | NUM_INT_T  { /*cout << "using term -> NUM_INT_T , with rhs ="
 		     << $1.ival << endl;*/
   $$.dval = $1.ival ;
@@ -100,8 +109,14 @@ term: ID_T { cout << "using term -> ID_T , with rhs ="  << $1.sval << endl;  }
 		     << $1.dval << endl;*/
   $$.dval = $1.dval ;
  } 
-| LPAREN_T {cout << "found an (" << endl;  } expr RPAREN_T 
+| LPAREN_T expr RPAREN_T {$$.dval = $2.dval;} 
     | ADDOP_T term
+    {
+      if ($1.sval=="-")
+	$$.dval = - $2.dval;
+      else
+	$$.dval=$2.dval;
+    }
     ;
 
 
