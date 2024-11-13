@@ -14,7 +14,7 @@ int yyFlexLexer::yylex() {
 }
 
 int main(int agrc, char *argv[]) {
-    MyScanner scanner{ cin, cerr };
-    Parser parser{ &scanner };
-    parser.parse();
+  MyScanner scanner( cin, cerr );
+  Parser parser( &scanner );
+  parser.parse();
 }
